@@ -243,7 +243,7 @@ EQUIPMENT_DB = [
     ("수리 키트",         "기타",  150,  0.2, "선택", "텐트·건조수트 응급 수리"),
 ]
 
-DB_ROW_COUNT = len(EQUIPMENT_DB)   # 25
+DB_ROW_COUNT = len(EQUIPMENT_DB)   # 50
 
 def build_sheet_db(wb):
     ws = wb.create_sheet("장비_DB")
@@ -1011,14 +1011,14 @@ End Sub
 def inject_db_checkboxes(filename: str) -> None:
     """
     openpyxl이 저장한 xlsx에 Form Control 체크박스를 VML로 직접 주입한다.
-    대상: 장비_DB 시트 H2:K26 (25행 × 4열 = 100개)
+    대상: 장비_DB 시트 H2:K51 (50행 × 4열 = 200개)
     LinkedCell: H{n}=카약1선수, I{n}=카약1선미, J{n}=카약2선수, K{n}=카약2선미
     """
     import zipfile, shutil, re
 
-    CB_COL0S    = [7, 8, 9, 10]        # H/I/J/K 0-based 열 인덱스
+    CB_COL0S    = [6, 7, 8, 9]         # H/I/J/K 0-based 열 인덱스
     COL_LETTERS = ['H', 'I', 'J', 'K']
-    CB_ROW0S    = range(1, DB_ROW_COUNT + 1)  # DB_ROW_COUNT 기준 자동 확장
+    CB_ROW0S    = range(0, DB_ROW_COUNT)  # DB_ROW_COUNT 기준 자동 확장
 
     # ── 1. 장비_DB 시트 파일 경로 찾기 ──────────────────────────────
     with zipfile.ZipFile(filename) as zf:
@@ -1056,7 +1056,7 @@ def inject_db_checkboxes(filename: str) -> None:
 
     for row0 in CB_ROW0S:
         for col0, col_letter in zip(CB_COL0S, COL_LETTERS):
-            row1 = row0 + 1  # 1-based
+            row1 = row0 + 2  # 1-based (anchor는 0-based offset, 헤더행 1개 보정)
             anchor = f"{col0}, 382, {row0}, 43, {col0+1}, -382, {row0+1}, -43"
             shapes_xml.append(
                 f' <v:shape id="_x0000_s{shape_id}" type="#_x0000_t201"\n'
